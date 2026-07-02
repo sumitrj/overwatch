@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Virtualenv
+.venv/
+venv/
+
+# Local artifacts
+RED_BASELINE.txt
+docs/_frames/
+
+# OS
+.DS_Store

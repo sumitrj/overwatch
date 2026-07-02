@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meridian Capital — Personal &amp; Home Loans</title>
+  <style>
+    :root { color-scheme: light; --brand:#1d4ed8; --ink:#16181d; --muted:#6b7280; --line:#e6e8ee; }
+    * { box-sizing: border-box; }
+    body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 0; color: var(--ink); background:#fff; }
+    header { display:flex; justify-content:space-between; align-items:center; padding:14px 28px; border-bottom:1px solid var(--line); }
+    .logo { font-weight:800; letter-spacing:-.02em; font-size:1.05rem; }
+    .logo span { color: var(--brand); }
+    nav a { color:var(--muted); text-decoration:none; font-size:.9rem; margin-right:18px; }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px 80px; }
+    .hero { padding: 44px 0 10px; }
+    .hero h1 { font-size: 1.9rem; letter-spacing:-.02em; margin: 0 0 8px; }
+    .hero p { color: var(--muted); max-width: 560px; margin: 0; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin: 28px 0; }
+    .product { border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .product h3 { margin:0 0 4px; font-size:1rem; }
+    .rate { font-size:1.3rem; font-weight:700; color:var(--brand); }
+    .rate small { font-size:.7rem; color:var(--muted); font-weight:400; }
+    .product ul { margin:10px 0 0; padding-left:18px; color:var(--muted); font-size:.82rem; }
+    .card { border:1px solid var(--line); border-radius:12px; padding:20px; margin: 18px 0; }
+    .card h2 { margin:0 0 6px; font-size:1.1rem; }
+    label { display:block; font-size:.85rem; color:var(--muted); margin-top:10px; }
+    input { width:100%; padding:9px; border:1px solid #ccd0da; border-radius:8px; }
+    button { margin-top:14px; padding:9px 16px; border:0; border-radius:8px; background:var(--brand); color:#fff; cursor:pointer; font-size:.9rem; }
+    .cols { display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+    @media (max-width:700px){ .cols { grid-template-columns:1fr; } }
+    .emi { margin-top:14px; font-size:.95rem; line-height:1.7; }
+    .emi b { font-size:1.25rem; color:var(--brand); }
+    .muted { color:var(--muted); font-size:.8rem; }
+    footer { border-top:1px solid var(--line); margin-top:40px; padding:18px 28px; color:var(--muted); font-size:.75rem; line-height:1.6; }
+    #signed { display:none; color:#15803d; font-size:.85rem; margin-top:10px; }
+    /* demo beacon log */
+    #beacon-log { position:fixed; right:14px; bottom:14px; width:340px; max-height:44vh; overflow:auto;
+                  background:#0f172a; color:#c7d2fe; font:11px/1.6 ui-monospace,Menlo,monospace;
+                  border-radius:10px; padding:10px 12px; opacity:.94; }
+    #beacon-log .t { color:#64748b; }
+    #beacon-log div { border-bottom:1px solid #1e293b; padding:2px 0; }
+    /* consent banner */
+    #consent-banner { display:none; position:fixed; left:0; right:0; bottom:0; background:#16181d; color:#fff;
+                      padding:16px 20px; box-shadow:0 -4px 16px rgba(0,0,0,.25); z-index:10; }
+    #consent-banner .inner { max-width:880px; margin:0 auto; display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+    #consent-banner p { margin:0; flex:1 1 320px; font-size:.9rem; line-height:1.4; }
+    #consent-banner button { margin-top:0; }
+    #consent-banner .decline { background:transparent; border:1px solid #666; color:#ddd; }
+    /* Autofill hook: the browser filling a field triggers this animation, which fires
+       `animationstart` — the only reliable signal that a value arrived without a keystroke. */
+    @keyframes ow-autofill { from {} to {} }
+    input:-webkit-autofill { animation-name: ow-autofill; animation-duration: .01s; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Meridian<span>Capital</span></div>
+    <nav>
+      <a href="#products">Products</a><a href="#calculator">EMI Calculator</a><a href="#about">About</a>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <div class="hero">
+      <h1>Loans that keep pace with you.</h1>
+      <p>Transparent rates, 24-hour approval, zero foreclosure charges after 12 months.
+         Check your EMI before you apply — no impact on your credit score.</p>
+    </div>
+
+    <div class="grid" id="products">
+      <div class="product">
+        <h3>Personal Loan</h3>
+        <div class="rate">11.5% <small>p.a. onwards</small></div>
+        <ul><li>₹50k – ₹25L</li><li>12–60 months</li><li>Processing fee 1%</li></ul>
+      </div>
+      <div class="product">
+        <h3>Home Loan</h3>
+        <div class="rate">8.6% <small>p.a. onwards</small></div>
+        <ul><li>Up to ₹5Cr</li><li>Tenure to 30 years</li><li>Balance transfer available</li></ul>
+      </div>
+      <div class="product">
+        <h3>Vehicle Loan</h3>
+        <div class="rate">9.4% <small>p.a. onwards</small></div>
+        <ul><li>New &amp; pre-owned</li><li>Up to 90% funding</li><li>12–84 months</li></ul>
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="card" id="calculator">
+        <h2>EMI Calculator</h2>
+        <label>Loan amount (₹)</label>
+        <input id="p" type="number" value="500000" />
+        <label>Annual interest rate (%)</label>
+        <input id="r" type="number" value="11.5" step="0.1" />
+        <label>Tenure (years)</label>
+        <input id="y" type="number" value="5" />
+        <button onclick="calc()">Calculate EMI</button>
+        <div class="emi" id="out"></div>
+      </div>
+
+      <div class="card">
+        <h2>Your account</h2>
+        <p class="muted">Sign in to save calculations and pick up your application where you left off.</p>
+        <label>Email</label>
+        <input id="email" type="email" name="email" autocomplete="email"
+               placeholder="you@example.com" onblur="capturePii('email', this.value, 'typed')" />
+        <label>Mobile (for OTP)</label>
+        <input id="phone" type="tel" name="phone" autocomplete="tel"
+               placeholder="98200 12345" onblur="capturePii('phone', this.value, 'typed')" />
+        <label>Password</label>
+        <input id="pw" type="password" autocomplete="current-password" placeholder="••••••••" />
+        <button onclick="login()">Sign in</button>
+        <div id="signed"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="about">
+    Meridian Capital Finance Ltd · RBI-registered NBFC · CIN U65999MH2011PLC219xxx ·
+    Rates shown are indicative and subject to credit assessment. This is a demonstration
+    environment; no real financial products are offered.
+  </footer>
+
+  <div id="beacon-log"><div class="t">— Overwatch data layer (demo view) —</div></div>
+
+  <div id="consent-banner">
+    <div class="inner">
+      <p>We use a first-party cookie, and process details you type into our forms, to remember
+         your visit and improve this service. We only do so with your permission — declining
+         keeps this browser cookie-free and your details unstored.</p>
+      <button onclick="acceptConsent()">Allow cookies</button>
+      <button class="decline" onclick="declineConsent()">Decline</button>
+    </div>
+  </div>
+
+  <script>
+    const sessionId = "s_" + Math.random().toString(36).slice(2, 10);
+    const banner = document.getElementById("consent-banner");
+    const logEl = document.getElementById("beacon-log");
+    const seen = new Set();
+    function log(line, once) {
+      if (once && seen.has(line)) return;
+      seen.add(line);
+      const d = document.createElement("div");
+      d.innerHTML = `<span class="t">${new Date().toLocaleTimeString()}</span> ${line}`;
+      logEl.appendChild(d); logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    // Device fingerprint: a stable hash of renderer + environment traits.
+    function fingerprint() {
+      const c = document.createElement("canvas"); const g = c.getContext("2d");
+      g.textBaseline = "top"; g.font = "14px Arial"; g.fillText("meridian∿fp", 2, 2);
+      const src = [navigator.userAgent, navigator.language, screen.width + "x" + screen.height,
+                   Intl.DateTimeFormat().resolvedOptions().timeZone, c.toDataURL()].join("|");
+      let h = 2166136261 >>> 0;
+      for (let i = 0; i < src.length; i++) { h ^= src.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+      return "fp_" + h.toString(16).padStart(8, "0");
+    }
+    const FP = fingerprint();
+
+    // Scanner beacon. Fires WITHOUT consent: the server's enforcement levers decide,
+    // per source, what is kept, what waits, and whether to ask the visitor.
+    // Log lines are tagged with the pipeline layer: sensor → collection → association.
+    async function beacon(extra = {}) {
+      const res = await fetch("/collect", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId, page: "loan-calculator", fingerprint: FP, ...extra })
+      });
+      const out = await res.json();
+      if ((out.admitted || []).includes("fingerprint"))
+        log(`[collection] fingerprint kept — no-ask basis`, true);
+      if ((out.awaiting_consent || []).includes("cookie"))
+        log("[collection] cookie blocked — permission required", true);
+      if ((out.admitted || []).includes("cookie"))
+        log("[collection] cookie kept → cx_anon set", true);
+      if ((out.pii_captured || []).length)
+        log(`[collection] personal details kept: ${out.pii_captured.join(", ")}`);
+      else if ((out.awaiting_consent || []).includes("pii") && (extra.pii || Object.keys(extra).length === 0))
+        log("[collection] personal details blocked — permission required", true);
+      if (out.observed)
+        log(`[association] resolved to entity <b>${out.entity_id}</b> (${out.archetype})`, true);
+      else
+        log("nothing collected — no entity exists", true);
+      if (out.ask_consent) { banner.style.display = "block"; log("permission dialog triggered — asking the visitor", true); }
+      return out;
+    }
+
+    // The PII fields worth reading, mapped to a stable signal name. Passwords are
+    // deliberately excluded — the sensor whitelists, it does not grab everything on the page.
+    const PII_FIELDS = { email: "#email", phone: "#phone" };
+
+    // "Any and all" capture: a field's value is sensed however it arrives —
+    // typed, server-prefilled, or browser-autofilled — with the ORIGIN noted.
+    // Whether it is KEPT is the collection layer's decision, not the page's.
+    function capturePii(field, value, via = "typed") {
+      if (!value) return;
+      log(`[sensor] ${field} ${via} — value read`, true);
+      beacon({ pii: { [field]: value } });
+    }
+
+    // On load, read whatever is already sitting in the form fields (server-prefilled
+    // value= attributes, or a value the browser has already restored). No keystroke needed.
+    function scanPrefilled() {
+      for (const [field, sel] of Object.entries(PII_FIELDS)) {
+        const el = document.querySelector(sel);
+        if (el && el.value) capturePii(field, el.value, "prefilled");
+      }
+    }
+
+    // Full within-origin sweep: harvest every email/phone available ON THIS PAGE — form
+    // fields, mailto/tel links, visible text, and the URL/referrer. This is the ceiling of
+    // what a page can reach: its OWN tab. Other tabs, other sites, and the browser's wider
+    // store are walled off by the same-origin policy and are NOT (and cannot be) touched.
+    const EMAIL_RE = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
+    const PHONE_RE = /\+?\d[\d\s\-]{8,}\d/g;
+    const isPhone = d => d.length >= 10 && d.length <= 12;
+    function harvestPage() {
+      const found = {};                                 // field -> [value, whereFound]
+      scanPrefilled();                                  // whitelisted form fields (logged separately)
+
+      // 1. Explicit identifiers in the URL — campaign/magic links: ?email= / ?phone=.
+      //    Named params are trusted; we do NOT blind-match digits in the raw query string
+      //    (that catches order ids, timestamps, anything numeric).
+      const params = new URLSearchParams(location.search + "&" + location.hash.replace(/^#/, ""));
+      for (const [k, v] of params) {
+        const key = k.toLowerCase();
+        if (!found.email && /^e-?mail$|^e$/.test(key) && EMAIL_RE.test(v)) found.email = [v, `URL ?${k}`];
+        if (!found.phone && /^(phone|tel|mobile|mob|msisdn)$/.test(key)) {
+          const d = v.replace(/\D/g, ""); if (isPhone(d)) found.phone = [d, `URL ?${k}`];
+        }
+      }
+
+      // 2. mailto:/tel: links on the page.
+      document.querySelectorAll('a[href^="mailto:"]').forEach(a =>
+        found.email ??= [a.href.slice(7).split("?")[0], "mailto: link"]);
+      document.querySelectorAll('a[href^="tel:"]').forEach(a =>
+        found.phone ??= [a.href.slice(4).replace(/\D/g, ""), "tel: link"]);
+
+      // 3. Loose pattern scan of the visible text + referrer (fallback).
+      const text = [document.body.innerText, document.referrer].join("  ");
+      const email = text.match(EMAIL_RE);
+      if (email) found.email ??= [email[0], "page text"];
+      const phone = (text.match(PHONE_RE) || []).map(s => s.replace(/\D/g, "")).find(isPhone);
+      if (phone) found.phone ??= [phone, "page text"];
+
+      for (const [field, [value, where]] of Object.entries(found)) capturePii(field, value, where);
+    }
+
+    // "Pull everything we can" — the full within-origin dump. This is the CEILING of what a
+    // page may read about its visitor and its own storage. It is a lot; it is also exactly
+    // why the collection gate exists. Still same-origin: no other tab or site is reachable.
+    function harvestEverything() {
+      harvestPage();                                    // email / phone (own gated log lines)
+      const bag = {};
+      const put = (k, v) => { if (v !== undefined && v !== null && v !== "") bag[k] = String(v).slice(0, 200); };
+
+      // Device & environment — the browser tells the page all of this for free.
+      const n = navigator;
+      put("user_agent", n.userAgent); put("language", n.language);
+      put("languages", (n.languages || []).join(",")); put("platform", n.platform);
+      put("cpu_cores", n.hardwareConcurrency); put("device_memory_gb", n.deviceMemory);
+      put("touch_points", n.maxTouchPoints); put("do_not_track", n.doNotTrack);
+      put("screen", `${screen.width}x${screen.height}@${window.devicePixelRatio}x`);
+      put("viewport", `${innerWidth}x${innerHeight}`);
+      put("timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+      put("url", location.href); put("referrer", document.referrer);
+      if (n.connection) put("network", `${n.connection.effectiveType} ~${n.connection.downlink}Mbps`);
+
+      // Our own cookies (non-httponly) and web storage — readable for this origin.
+      put("cookies", document.cookie);
+      const dump = (store, label) => { for (let i = 0; i < store.length; i++) { const k = store.key(i); put(`${label}:${k}`, store.getItem(k)); } };
+      try { dump(localStorage, "localStorage"); dump(sessionStorage, "sessionStorage"); } catch (_) {}
+
+      // Every form field on the page — by name — EXCEPT passwords, which we never read.
+      document.querySelectorAll("input, textarea, select").forEach(el => {
+        if (el.type === "password" || !el.value) return;
+        put(`field:${el.name || el.id || el.type}`, el.value);
+      });
+
+      log(`[sensor] full page sweep — ${Object.keys(bag).length} signals read`, true);
+      beacon({ pii: bag });                             // one gated beacon carries the whole dump
+    }
+
+    // Browser autofill fires no input/change event; the CSS animation hook above is the
+    // one reliable signal. When the browser fills email/phone from its saved profile, read it.
+    function fieldKey(el) {
+      return Object.keys(PII_FIELDS).find(k => document.querySelector(PII_FIELDS[k]) === el);
+    }
+    document.addEventListener("animationstart", e => {
+      if (e.animationName !== "ow-autofill") return;
+      const field = fieldKey(e.target);
+      if (field) setTimeout(() => capturePii(field, e.target.value, "browser-autofilled"), 0);
+    }, true);
+
+    function acceptConsent() {
+      document.cookie = "cx_consent=true; path=/; max-age=" + 60 * 60 * 24 * 180 + "; samesite=lax";
+      banner.style.display = "none";
+      log("visitor granted consent");
+      beacon({ consent: true, consent_event: "granted" });   // re-fire: the gate now sees consent
+      harvestEverything();                                    // now-consented full dump is kept
+    }
+
+    function declineConsent() {
+      banner.style.display = "none";
+      log("visitor declined — nothing consent-based is kept");
+      fetch("/collect", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId, consent_event: "declined" }) });
+    }
+
+    async function login() {
+      const email = document.getElementById("email").value;
+      const res = await fetch("/login", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_token: email })
+      });
+      const out = await res.json();
+      const el = document.getElementById("signed");
+      el.style.display = "block";
+      el.textContent = `Signed in as ${email}`;
+      log(`[association] sign-in backpopulated <b>${out.backpopulated_sessions}</b> earlier session(s) into ${out.entity_id} (${out.archetype})`);
+    }
+
+    function calc() {
+      const p = +document.getElementById("p").value;
+      const r = +document.getElementById("r").value / 100 / 12;
+      const n = +document.getElementById("y").value * 12;
+      const emi = r ? p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1) : p / n;
+      const total = emi * n;
+      document.getElementById("out").innerHTML =
+        `Monthly EMI: <b>₹${Math.round(emi).toLocaleString("en-IN")}</b><br>` +
+        `Total interest: ₹${Math.round(total - p).toLocaleString("en-IN")} · ` +
+        `Total payable: ₹${Math.round(total).toLocaleString("en-IN")}`;
+      beacon({ event: "calculate" });
+    }
+
+    log(`[sensor] fingerprint computed: <b>${FP}</b>`, true);
+    beacon().then(harvestEverything);   // sense the device, then pull everything the page can
+  </script>
+</body>
+</html>

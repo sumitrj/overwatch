@@ -1,0 +1,12 @@
+services:
+  overwatch:
+    build: .
+    image: overwatch-census
+    container_name: overwatch
+    ports:
+      - "8000:8000"
+    environment:
+      # Optional: forward real GA events. Left unset, forwarding is a no-op.
+      - GA_MEASUREMENT_ID=${GA_MEASUREMENT_ID:-}
+      - GA_API_SECRET=${GA_API_SECRET:-}
+    restart: unless-stopped

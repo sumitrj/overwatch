@@ -1,0 +1,2 @@
+# Extra tooling for scripts/record_demo.py (uses system Chrome, no browser download).
+playwright
